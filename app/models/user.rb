@@ -12,6 +12,7 @@
 #  reset_password_token   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  team_id                :integer
 #
 # Indexes
 #
@@ -25,6 +26,12 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
     after_create :assign_default_role
+
+  def name
+    "#{first_name} #{last_name}"
+  end
+  has_many :projects
+  has_many :teams    
     def assign_default_role
       if User.count == 1
         self.add_role(:site_admin) if self.roles.blank?
